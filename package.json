@@ -1,0 +1,15 @@
+{
+  "name": "pixi-tiled",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify index.js -o bin/pixi-tiled.js --debug"
+  },
+  "author": "",
+  "license": "BSD",
+  "devDependencies": {
+    "browserify": "~9.0.8"
+  }
+}
