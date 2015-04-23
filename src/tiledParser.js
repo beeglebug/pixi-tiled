@@ -1,9 +1,11 @@
-module.exports = function ()
+module.exports = function (resource, next)
 {
-    return function (resource, next)
-    {
-        // do parsing
-
+    // bail out early
+    if(!resource.layers || !resource.tilesets) {
         next();
-    };
+    }
+
+    console.log('looks like we got a tiled map');
+
+    next();
 };
