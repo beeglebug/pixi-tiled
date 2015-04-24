@@ -4,7 +4,7 @@ var PIXI = require('pixi.js');
  * Layer
  * @constructor
  */
-var Layer = function(layerData, tilesets)
+var Layer = function(layerData, tilesets, tileWidth, tileHeight)
 {
     PIXI.Container.call(this);
 
@@ -12,7 +12,7 @@ var Layer = function(layerData, tilesets)
 
     this.alpha = layerData.opacity;
 
-    this.generateSprites(layerData.width, layerData.height, 16, 16, tilesets);
+    this.generateSprites(layerData.width, layerData.height, tileWidth, tileHeight, tilesets);
 };
 
 Layer.prototype = Object.create(PIXI.Container.prototype);

@@ -46,7 +46,7 @@ module.exports = function (resource, next) {
 
     data.layers.forEach(function(layerData) {
 
-        var layer = new Layer(layerData, map.tilesets);
+        var layer = new Layer(layerData, map.tilesets, data.tilewidth, data.tileheight);
 
         map.addChild(layer);
     });
