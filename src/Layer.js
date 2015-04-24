@@ -1,4 +1,3 @@
-var Tile = require('./Tile');
 var PIXI = require('pixi.js');
 
 /**
