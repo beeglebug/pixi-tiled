@@ -20,7 +20,7 @@ module.exports = function (resource, next) {
 
     var map = new Map();
 
-    //console.log(data, map);
+    console.log(data, map);
 
     data.tilesets.forEach(function(tilesetData) {
 
@@ -30,19 +30,25 @@ module.exports = function (resource, next) {
 
         var tileset = new Tileset(tilesetData, baseTexture);
 
+        // update the textures once the base texture has loaded
         baseTexture.once('loaded', function() {
             tileset.updateTextures();
         });
 
-        console.log(tilesetData, tileset);
+        map.tilesets.push(tileset);
     });
 
-    //data.layers.forEach(function(layerData) {
-    //
-    //    var layer = new Layer();
-    //
-    //    console.log(layerData, layer);
-    //});
+    // they need to be in order of firstGID
+    map.tilesets.sort(function(a, b) {
+        return a.firstGID > b.firstGID;
+    });
+
+    data.layers.forEach(function(layerData) {
+
+        var layer = new Layer(layerData, map.tilesets);
+
+        map.layers.push(layer);
+    });
 
     next();
 };

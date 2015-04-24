@@ -21,8 +21,7 @@ var Tileset = function(data, texture) {
 
     var x, y;
 
-    // create textures
-    // textures will be invalid until baseTexture loads
+    // create textures (invalid until baseTexture loaded)
     for ( y = 0; y < this.imageHeight; y += this.tileHeight ) {
 
         for ( x = 0; x < this.imageWidth; x += this.tileWidth ) {
@@ -34,7 +33,9 @@ var Tileset = function(data, texture) {
     }
 };
 
-
+/**
+ * update the frames of the textures
+ */
 Tileset.prototype.updateTextures = function() {
 
     var texture, frame, x, y, i = 0;
