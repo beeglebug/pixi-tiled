@@ -12,7 +12,7 @@ var Layer = function(layerData, tilesets)
 
     this.alpha = layerData.opacity;
 
-    this.generateSprites(layerData.width, layerData.height, tilesets);
+    this.generateSprites(layerData.width, layerData.height, 16, 16, tilesets);
 };
 
 Layer.prototype = Object.create(PIXI.Container.prototype);
@@ -20,7 +20,7 @@ Layer.prototype = Object.create(PIXI.Container.prototype);
 /**
  * generate the map tiles
  */
-Layer.prototype.generateSprites = function(width, height, tilesets)
+Layer.prototype.generateSprites = function(width, height, tileWidth, tileHeight, tilesets)
 {
     var x, y, i, id, texture, sprite;
 
@@ -39,8 +39,8 @@ Layer.prototype.generateSprites = function(width, height, tilesets)
 
                 sprite = new PIXI.Sprite(texture);
 
-                sprite.x = x * 16;
-                sprite.y = y * 16;
+                sprite.x = x * tileWidth;
+                sprite.y = y * tileHeight;
 
                 this.addChild(sprite);
             }
