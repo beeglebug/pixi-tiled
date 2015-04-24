@@ -18,11 +18,13 @@ module.exports = function (resource, next) {
 
     var data = resource.data;
 
-    var map = new Map();
+    var map = new Map(data);
 
-    console.log(data, map);
+    var toLoad = 0;
 
     data.tilesets.forEach(function(tilesetData) {
+
+        toLoad++;
 
         var src = path.join(root, tilesetData.image);
 
@@ -32,13 +34,17 @@ module.exports = function (resource, next) {
 
         // update the textures once the base texture has loaded
         baseTexture.once('loaded', function() {
+            toLoad--;
             tileset.updateTextures();
+            if(toLoad <= 0) {
+                next();
+            }
         });
 
         map.tilesets.push(tileset);
     });
 
-    // they need to be in order of firstGID
+    // they need to be in order of firstGID to enable tile lookups
     map.tilesets.sort(function(a, b) {
         return a.firstGID > b.firstGID;
     });
@@ -47,8 +53,10 @@ module.exports = function (resource, next) {
 
         var layer = new Layer(layerData, map.tilesets);
 
-        map.layers.push(layer);
+        map.addChild(layer);
     });
 
-    next();
+    resource.tiledMap = map;
+
+    //next();
 };

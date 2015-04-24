@@ -10,9 +10,9 @@ var Layer = function(layerData, tilesets)
 
     this.data = layerData.data;
 
-    this.children = this.generateSprites(layerData.width, layerData.height, tilesets);
+    this.alpha = layerData.opacity;
 
-    console.log(this, layerData);
+    this.generateSprites(layerData.width, layerData.height, tilesets);
 };
 
 Layer.prototype = Object.create(PIXI.Container.prototype);
@@ -22,7 +22,7 @@ Layer.prototype = Object.create(PIXI.Container.prototype);
  */
 Layer.prototype.generateSprites = function(width, height, tilesets)
 {
-    var x, y, i, id, texture, sprites = [];
+    var x, y, i, id, texture, sprite;
 
     for ( y = 0; y < height; y++ ) {
 
@@ -37,14 +37,15 @@ Layer.prototype.generateSprites = function(width, height, tilesets)
 
                 texture = this.findTexture(id, tilesets);
 
-                sprites.push(
-                    new PIXI.Sprite(texture)
-                );
+                sprite = new PIXI.Sprite(texture);
+
+                sprite.x = x * 16;
+                sprite.y = y * 16;
+
+                this.addChild(sprite);
             }
         }
     }
-
-    return sprites;
 };
 
 Layer.prototype.findTexture = function(id, tilesets)
