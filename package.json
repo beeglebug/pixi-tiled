@@ -9,7 +9,7 @@
     "build": "browserify index.js -o bin/pixi-tiled.js --debug"
   },
   "author": "",
-  "license": "BSD",
+  "license": "MIT",
   "devDependencies": {
     "browserify": "~9.0.8"
   }
