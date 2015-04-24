@@ -44,11 +44,6 @@ module.exports = function (resource, next) {
         map.tilesets.push(tileset);
     });
 
-    // they need to be in order of firstGID to enable tile lookups
-    map.tilesets.sort(function(a, b) {
-        return a.firstGID > b.firstGID;
-    });
-
     data.layers.forEach(function(layerData) {
 
         var layer = new Layer(layerData, map.tilesets);
