@@ -1,6 +1,6 @@
 {
   "name": "pixi-tiled",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "import tiled maps into pixi",
   "repository": "https://github.com/beeglebug/pixi-tiled",
   "main": "index.js",
