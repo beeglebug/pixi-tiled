@@ -1,6 +1,6 @@
 {
   "name": "pixi-tiled",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A Pixi.js plugin to import maps from the Tiled map editor.",
   "keywords": ["Pixi.js","Tiled"],
   "author": "Stuart Lee",
