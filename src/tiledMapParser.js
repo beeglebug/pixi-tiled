@@ -12,8 +12,6 @@ module.exports = function() {
             return next();
         }
 
-        var self = this;
-
         // tileset image paths are relative so we need the root path
         var root = path.dirname(resource.url);
 
@@ -53,7 +51,5 @@ module.exports = function() {
         });
 
         resource.tiledMap = map;
-
-        //next();
     };
 };
