@@ -1,3 +1,5 @@
+var Tile = require('./Tile');
+
 /**
  * Layer
  * @constructor
@@ -6,11 +8,13 @@ var Layer = function(layerData, tilesets, tileWidth, tileHeight)
 {
     PIXI.Container.call(this);
 
+    this.name = layerData.name;
+
     this.data = layerData.data;
 
     this.alpha = layerData.opacity;
 
-    this.generateSprites(layerData.width, layerData.height, tileWidth, tileHeight, tilesets);
+    this.generateTiles(layerData.width, layerData.height, tileWidth, tileHeight, tilesets);
 };
 
 Layer.prototype = Object.create(PIXI.Container.prototype);
@@ -18,9 +22,9 @@ Layer.prototype = Object.create(PIXI.Container.prototype);
 /**
  * generate the map tiles
  */
-Layer.prototype.generateSprites = function(width, height, tileWidth, tileHeight, tilesets)
+Layer.prototype.generateTiles = function(width, height, tileWidth, tileHeight, tilesets)
 {
-    var x, y, i, id, texture, sprite;
+    var x, y, i, gid, texture, tile;
 
     for ( y = 0; y < height; y++ ) {
 
@@ -28,42 +32,25 @@ Layer.prototype.generateSprites = function(width, height, tileWidth, tileHeight,
 
             i = x + (y * width);
 
-            id = this.data[i];
+            gid = this.data[i];
 
-            // 0 sprite is a gap
-            if ( id !== 0 ) {
+            // 0 is a gap
+            if ( gid !== 0 ) {
 
-                texture = this.findTexture(id, tilesets);
+                tile = new Tile(gid, tilesets);
 
-                sprite = new PIXI.Sprite(texture);
+                tile.x = x * tileWidth;
+                tile.y = y * tileHeight;
 
-                sprite.x = x * tileWidth;
-                sprite.y = y * tileHeight;
-
-                this.addChild(sprite);
+                this.addChild(tile);
             }
         }
     }
 };
 
-/**
- * find the texture for a given tile from the array of tilesets
- */
-Layer.prototype.findTexture = function(id, tilesets)
+Layer.prototype.getTilesById = function(id)
 {
-    var tileset, i, ix;
 
-    // go backwards through the tilesets
-    // find the first tileset with the firstGID lower that the one we want
-    for ( i = tilesets.length - 1; i >= 0; i-- ) {
-        tileset = tilesets[i];
-        if(tileset.firstGID <= id) { break; }
-    }
-
-    // calculate the internal position within the tileset
-    ix = id - tileset.firstGID;
-
-    return tileset.textures[ix];
 };
 
 module.exports = Layer;
