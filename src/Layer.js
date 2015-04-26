@@ -46,15 +46,21 @@ Layer.prototype.generateSprites = function(width, height, tileWidth, tileHeight,
     }
 };
 
+/**
+ * find the texture for a given tile from the array of tilesets
+ */
 Layer.prototype.findTexture = function(id, tilesets)
 {
     var tileset, i, ix;
 
+    // go backwards through the tilesets
+    // find the first tileset with the firstGID lower that the one we want
     for ( i = tilesets.length - 1; i >= 0; i-- ) {
         tileset = tilesets[i];
         if(tileset.firstGID <= id) { break; }
     }
 
+    // calculate the internal position within the tileset
     ix = id - tileset.firstGID;
 
     return tileset.textures[ix];
