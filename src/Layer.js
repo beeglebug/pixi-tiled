@@ -13,9 +13,11 @@ var Layer = function(name, alpha)
 
 Layer.prototype = Object.create(PIXI.Container.prototype);
 
-Layer.prototype.getTilesById = function(id)
+Layer.prototype.getTilesByGid = function(gid)
 {
-
+    return this.children.filter(function(tile) {
+        return tile.gid == gid;
+    });
 };
 
 module.exports = Layer;
