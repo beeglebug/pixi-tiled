@@ -4,54 +4,57 @@ var Layer = require('./Layer');
 var PIXI = require('pixi.js');
 var path = require('path');
 
-module.exports = function (resource, next) {
+module.exports = function() {
 
-    // early exit if it is not the right type
-    if(!resource.data.layers || !resource.data.tilesets) {
-        return next();
-    }
+    return function (resource, next) {
 
-    var self = this;
+        // early exit if it is not the right type
+        if (!resource.data.layers || !resource.data.tilesets) {
+            return next();
+        }
 
-    // tileset image paths are relative so we need the root path
-    var root = path.dirname(resource.url);
+        var self = this;
 
-    var data = resource.data;
+        // tileset image paths are relative so we need the root path
+        var root = path.dirname(resource.url);
 
-    var map = new Map(data);
+        var data = resource.data;
 
-    var toLoad = 0;
+        var map = new Map(data);
 
-    data.tilesets.forEach(function(tilesetData) {
+        var toLoad = 0;
 
-        toLoad++;
+        data.tilesets.forEach(function (tilesetData) {
 
-        var src = path.join(root, tilesetData.image);
+            toLoad++;
 
-        var baseTexture = PIXI.BaseTexture.fromImage(src);
+            var src = path.join(root, tilesetData.image);
 
-        var tileset = new Tileset(tilesetData, baseTexture);
+            var baseTexture = PIXI.BaseTexture.fromImage(src);
 
-        // update the textures once the base texture has loaded
-        baseTexture.once('loaded', function() {
-            toLoad--;
-            tileset.updateTextures();
-            if(toLoad <= 0) {
-                next();
-            }
+            var tileset = new Tileset(tilesetData, baseTexture);
+
+            // update the textures once the base texture has loaded
+            baseTexture.once('loaded', function () {
+                toLoad--;
+                tileset.updateTextures();
+                if (toLoad <= 0) {
+                    next();
+                }
+            });
+
+            map.tilesets.push(tileset);
         });
 
-        map.tilesets.push(tileset);
-    });
+        data.layers.forEach(function (layerData) {
 
-    data.layers.forEach(function(layerData) {
+            var layer = new Layer(layerData, map.tilesets, data.tilewidth, data.tileheight);
 
-        var layer = new Layer(layerData, map.tilesets, data.tilewidth, data.tileheight);
+            map.addChild(layer);
+        });
 
-        map.addChild(layer);
-    });
+        resource.tiledMap = map;
 
-    resource.tiledMap = map;
-
-    //next();
+        //next();
+    };
 };
