@@ -1,4 +1,4 @@
-var Map = require('./Map');
+var TiledMap = require('./TiledMap');
 var Tileset = require('./Tileset');
 var Layer = require('./Layer');
 var Tile = require('./Tile');
@@ -38,7 +38,7 @@ module.exports = function() {
 
         var data = resource.data;
 
-        var map = new Map(data);
+        var map = new TiledMap(data);
 
         var toLoad = 0;
 

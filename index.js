@@ -8,7 +8,7 @@ module.exports = {
 
     tiledMapParser : tiledMapParser,
     Tileset : require('./src/Tileset'),
-    Map : require('./src/Map'),
+    TiledMap : require('./src/TiledMap'),
     Layer : require('./src/Layer')
 
 };
