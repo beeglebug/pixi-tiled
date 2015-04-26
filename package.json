@@ -2,7 +2,12 @@
   "name": "pixi-tiled",
   "version": "1.0.0",
   "description": "A Pixi.js plugin to import maps from the Tiled map editor.",
-  "keywords": ["Pixi.js","Tiled"],
+  "keywords": [
+    "pixi",
+    "pixi.js",
+    "tiled",
+    "tilemap"
+  ],
   "author": "Stuart Lee",
   "repository": "https://github.com/beeglebug/pixi-tiled",
   "license": "MIT",
