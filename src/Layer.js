@@ -13,10 +13,14 @@ var Layer = function(name, alpha)
 
 Layer.prototype = Object.create(PIXI.Container.prototype);
 
-Layer.prototype.getTilesByGid = function(gid)
+Layer.prototype.getTilesByGid = function(gids)
 {
+    if(!Array.isArray(gids)) {
+        gids = [gids];
+    }
+
     return this.children.filter(function(tile) {
-        return tile.gid == gid;
+        return gids.indexOf(tile.gid) > -1;
     });
 };
 

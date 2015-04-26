@@ -20,16 +20,10 @@ TiledMap.prototype.getLayerByName = function(name)
 
 TiledMap.prototype.getTilesByGid = function(gids)
 {
-    if(!Array.isArray(gids)) {
-        gids = [gids];
-    }
-
     var tiles = [];
 
     this.children.forEach(function(layer) {
-        tiles = tiles.concat(layer.children.filter(function(tile) {
-            return gids.indexOf(tile.gid) > -1;
-        }));
+        tiles = tiles.concat(layer.getTilesByGid(gids));
     });
 
     return tiles;
