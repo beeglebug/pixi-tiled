@@ -19,12 +19,11 @@ var PIXI = require('pixi.js');
 var pixiTiled = require('pixi-tiled');
 
 /**
- * simply load a Tiled map in json format
- * the plugin has automatically registered itself to handle the file
- * the map will be loaded, parsed and made available on res.tiledMap
+ * Simply load a Tiled map in json format
+ * The map data will be loaded, parsed and a renderable Map object made available on res.tiledMap
  */
-PIXI.loader.add('map.json', function(res) {
-
+PIXI.loader.add('map.json', function(res)
+{
     var map = res.tiledMap;
 });
 
