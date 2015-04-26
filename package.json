@@ -9,7 +9,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "browserify index.js -o bin/pixi-tiled.js --debug"
+    "build": "browserify index.js -o bin/pixi-tiled.js"
   },
   "devDependencies": {
     "browserify": "~9.0.8"
