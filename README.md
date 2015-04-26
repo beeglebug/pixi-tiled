@@ -14,15 +14,11 @@ npm install pixi-tiled
 var PIXI = require('pixi.js');
 var pixiTiled = require('pixi-tiled');
 
-var loader = new PIXI.loaders.Loader();
-
-loader.use(pixiTiled.tiledMapParser);
-
-loader.add('map.json', function(res) {
+PIXI.loader.add('map.json', function(res) {
 
     var map = res.tiledMap;
     
 });
 
-loader.load();
+PIXI.loader.load();
 ```
