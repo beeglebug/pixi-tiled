@@ -1,9 +1,30 @@
 var Map = require('./Map');
 var Tileset = require('./Tileset');
 var Layer = require('./Layer');
+var Tile = require('./Tile');
 var path = require('path');
 
 module.exports = function() {
+
+    /**
+     * find the texture for a given tile from the array of tilesets
+     */
+    function findTexture(gid, tilesets)
+    {
+        var tileset, i, ix;
+
+        // go backwards through the tilesets
+        // find the first tileset with the firstGID lower that the one we want
+        for ( i = tilesets.length - 1; i >= 0; i-- ) {
+            tileset = tilesets[i];
+            if(tileset.firstGID <= gid) { break; }
+        }
+
+        // calculate the internal position within the tileset
+        ix = gid - tileset.firstGID;
+
+        return tileset.textures[ix];
+    }
 
     return function (resource, next) {
 
@@ -45,8 +66,35 @@ module.exports = function() {
 
         data.layers.forEach(function (layerData) {
 
-            var layer = new Layer(layerData, map.tilesets, data.tilewidth, data.tileheight);
+            var layer = new Layer(layerData.name, layerData.opacity);
 
+            // generate tiles for the layer
+            var x, y, i, gid, texture, tile;
+
+            for ( y = 0; y < layerData.height; y++ ) {
+
+                for ( x = 0; x < layerData.width; x++ ) {
+
+                    i = x + (y * layerData.width);
+
+                    gid = layerData.data[i];
+
+                    // 0 is a gap
+                    if ( gid !== 0 ) {
+
+                        texture = findTexture(gid, map.tilesets);
+
+                        tile = new Tile(gid, texture);
+
+                        tile.x = x * data.tilewidth;
+                        tile.y = y * data.tileheight;
+
+                        layer.addChild(tile);
+                    }
+                }
+            }
+
+            // add to map
             map.layers[layer.name] = layer;
 
             map.addChild(layer);
