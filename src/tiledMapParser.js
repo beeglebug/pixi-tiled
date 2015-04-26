@@ -47,6 +47,8 @@ module.exports = function() {
 
             var layer = new Layer(layerData, map.tilesets, data.tilewidth, data.tileheight);
 
+            map.layers[layer.name] = layer;
+
             map.addChild(layer);
         });
 
