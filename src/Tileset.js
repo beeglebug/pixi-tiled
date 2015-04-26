@@ -1,5 +1,3 @@
-var PIXI = require('pixi.js');
-
 /**
  * Tileset
  * @constructor

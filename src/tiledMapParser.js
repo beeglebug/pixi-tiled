@@ -1,7 +1,6 @@
 var Map = require('./Map');
 var Tileset = require('./Tileset');
 var Layer = require('./Layer');
-var PIXI = require('pixi.js');
 var path = require('path');
 
 module.exports = function() {
