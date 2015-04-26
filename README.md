@@ -2,6 +2,10 @@
 
 Import [Tiled](http://www.mapeditor.org/) maps into pixi v3.
 
+Uses the new loader middleware to intercept Tiled json maps and parse them into renderable objects.
+
+The resulting Map object is an extension of PIXI.Container, with children representing each of the Tiled map layers.
+
 ## installation
 
 ```sh
@@ -22,13 +26,6 @@ var pixiTiled = require('pixi-tiled');
 PIXI.loader.add('map.json', function(res) {
 
     var map = res.tiledMap;
-    
-    /**
-     * the resulting pixiTiled.Map object is an extension of PIXI.Container
-     * and so is fully renderable
-     */
-    // renderer.render(res.tiledMap);
-    
 });
 
 PIXI.loader.load();
