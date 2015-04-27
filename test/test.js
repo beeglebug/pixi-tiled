@@ -1,32 +1,78 @@
-// mocks to allow PIXI to boot
-global.document = {
-    createElement: function() {
-        return {
-            getContext: function() {
-                return {
-                    drawImage: function() {},
-                    getImageData: function() { return { data : [] }; }
-                };
-            }
-        };
-    }
-};
-global.Image = function(){};
-global.window = {};
-
-var PIXI = require('pixi.js');
-var pixiTiled = require('../index.js');
+var mock = require('./mock');
 var expect = require('chai').expect;
 var describe = require('mocha').describe;
 var it = require('mocha').it;
 
-describe('TiledMap', function() {
+var PIXI = require('pixi.js');
+var pixiTiled = require('../index.js');
 
-    var map = new pixiTiled.TiledMap();
+describe('parser', function() {
 
-    it('should have the right properties', function() {
-        expect(map.layers).to.be.an('object');
-        expect(map.tilesets).to.be.an('array');
-        expect(map.tilesets).to.have.length(0);
+    var parser = pixiTiled.tiledMapParser();
+
+    var resource = {
+        data: require('./data/map.js')
+    };
+
+    var next = function () {};
+
+    parser(resource, next);
+
+    it('should parse a map file', function() {
+
+        expect(resource.tiledMap).to.exist;
+        expect(resource.tiledMap).to.be.an.instanceOf(pixiTiled.TiledMap);
+    });
+
+    it('should create tilesets', function() {
+
+        var tilesets = resource.tiledMap.tilesets;
+
+        expect(tilesets).to.be.an('array');
+        expect(tilesets).to.have.length(1);
+        expect(tilesets[0]).to.be.an.instanceOf(pixiTiled.Tileset);
+    });
+
+    it('should create layers', function() {
+
+        var layers = resource.tiledMap.layers;
+
+        expect(layers).to.be.an('object');
+        expect(layers).to.have.all.keys([
+            'test layer 1',
+            'test layer 2'
+        ]);
+
+        var layer = resource.tiledMap.getLayerByName('test layer 1');
+
+        expect(layer).to.be.an.instanceOf(pixiTiled.Layer);
+    });
+
+    it('should parent layers', function() {
+
+        var children = resource.tiledMap.children;
+
+        expect(children).to.be.an('array');
+        expect(children).to.have.length(2);
+    });
+
+    it('should create tiles', function() {
+
+        var layer1 = resource.tiledMap.getLayerByName('test layer 1');
+        var layer2 = resource.tiledMap.getLayerByName('test layer 2');
+
+        expect(layer1.children).to.be.an('array');
+        expect(layer1.children).to.have.length(0);
+
+        expect(layer2.children).to.be.an('array');
+        expect(layer2.children).to.have.length(9);
+
+        var tile1 = layer2.children[0];
+        var tile2 = layer2.children[4];
+
+        expect(tile1).to.be.an.instanceOf(pixiTiled.Tile);
+        expect(tile1.gid).to.equal(1);
+        expect(tile2.gid).to.equal(2);
+
     });
 });
