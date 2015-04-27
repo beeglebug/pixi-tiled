@@ -1,9 +1,32 @@
-var should = require('chai').should();
+// mocks to allow PIXI to boot
+global.document = {
+    createElement: function() {
+        return {
+            getContext: function() {
+                return {
+                    drawImage: function() {},
+                    getImageData: function() { return { data : [] }; }
+                };
+            }
+        };
+    }
+};
+global.Image = function(){};
+global.window = {};
+
 var PIXI = require('pixi.js');
 var pixiTiled = require('../index.js');
+var expect = require('chai').expect;
+var describe = require('mocha').describe;
+var it = require('mocha').it;
 
-//
-//foo.should.be.a('string');
-//foo.should.equal('bar');
-//foo.should.have.length(3);
-//beverages.should.have.property('tea').with.length(3);
+describe('TiledMap', function() {
+
+    var map = new pixiTiled.TiledMap();
+
+    it('should have the right properties', function() {
+        expect(map.layers).to.be.an('object');
+        expect(map.tilesets).to.be.an('array');
+        expect(map.tilesets).to.have.length(0);
+    });
+});
