@@ -1,5 +1,7 @@
 # pixi-tiled
 
+[![Build Status](https://api.travis-ci.org/beeglebug/pixi-tiled.png)](https://travis-ci.org/beeglebug/pixi-tiled)
+
 Import [Tiled](http://www.mapeditor.org/) maps into pixi v3.
 
 Uses the new loader middleware to intercept Tiled json maps and parse them into renderable objects.
