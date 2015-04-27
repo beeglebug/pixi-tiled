@@ -1,6 +1,4 @@
-# pixi-tiled
-
-[![Build Status](https://api.travis-ci.org/beeglebug/pixi-tiled.png)](https://travis-ci.org/beeglebug/pixi-tiled)
+# pixi-tiled [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url]
 
 Import [Tiled](http://www.mapeditor.org/) maps into pixi v3.
 
@@ -31,3 +29,9 @@ PIXI.loader.add('map.json', function(res)
 
 PIXI.loader.load();
 ```
+
+[npm-url]: https://npmjs.org/package/pixi-tiled
+[npm-image]: http://img.shields.io/npm/v/pixi-tiled.svg?style=flat
+
+[travis-url]: http://travis-ci.org/beeglebug/pixi-tiled
+[travis-image]: http://img.shields.io/travis/beeglebug/pixi-tiled/master.svg?style=flat
