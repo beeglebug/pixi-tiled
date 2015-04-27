@@ -9,6 +9,6 @@ module.exports = {
     tiledMapParser : tiledMapParser,
     Tileset : require('./src/Tileset'),
     TiledMap : require('./src/TiledMap'),
-    Layer : require('./src/Layer')
-
+    Layer : require('./src/Layer'),
+    Tile : require('./src/Tile')
 };
