@@ -29,7 +29,7 @@ module.exports = function() {
     return function (resource, next) {
 
         // early exit if it is not the right type
-        if (!resource.data.layers || !resource.data.tilesets) {
+        if (!resource.data || !resource.isJson || !resource.data.layers || !resource.data.tilesets) {
             return next();
         }
 
