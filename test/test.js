@@ -16,6 +16,8 @@ describe('parser', function() {
 
     var next = function () {};
 
+    // fake it because we don't actually load the file
+    resource.isJson = true;
     parser(resource, next);
 
     it('should parse a map file', function() {
