@@ -62,6 +62,48 @@ module.exports = function() {
             });
 
             map.tilesets.push(tileset);
+
+            var id, i, p, tile, shapeData, shapes, shape, points;
+
+            for(id in tilesetData.tiles) {
+
+                tile = tilesetData.tiles[id];
+
+                for(i = 0; i < tile.objectgroup.objects.length; i++) {
+
+                    shapeData = tile.objectgroup.objects[0];
+
+                    shapes = [];
+
+                    if (shapeData.polygon) {
+
+                        points = [];
+
+                        for (p = 0; p < shapeData.polygon.length; p++) {
+                            points.push(shapeData.polygon[p].x);
+                            points.push(shapeData.polygon[p].y);
+                        }
+
+                        shape = new PIXI.Polygon(points);
+
+                    } else if (shapeData.ellipse) {
+
+                        shape = new PIXI.Circle(shapeData.x, shapeData.y, shapeData.height / 2);
+
+                    } else {
+
+                        shape = new PIXI.Rectangle(shapeData.x, shapeData.y, shapeData.width, shapeData.height);
+
+                    }
+
+                    shapes.push(shape);
+                }
+
+                // object data id is 1 lower than gid for some reason
+                tileset.tiles[+id + 1] = {
+                    collision: shapes
+                };
+            }
         });
 
         data.layers.forEach(function (layerData) {

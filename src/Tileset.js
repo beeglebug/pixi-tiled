@@ -29,6 +29,8 @@ var Tileset = function (data, texture) {
             );
         }
     }
+
+    this.tiles = {};
 };
 
 /**
