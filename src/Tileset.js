@@ -20,9 +20,9 @@ var Tileset = function(data, texture) {
     var x, y;
 
     // create textures (invalid until baseTexture loaded)
-    for ( y = 0; y < this.imageHeight; y += this.tileHeight ) {
+	for ( y = this.margin; y < this.imageHeight; y += this.tileHeight + this.spacing ) {
 
-        for ( x = 0; x < this.imageWidth; x += this.tileWidth ) {
+        for ( x = this.margin; x < this.imageWidth; x += this.tileWidth + this.spacing ) {
 
             this.textures.push(
                 new PIXI.Texture( this.baseTexture )
@@ -38,9 +38,9 @@ Tileset.prototype.updateTextures = function() {
 
     var texture, frame, x, y, i = 0;
 
-    for ( y = 0; y < this.imageHeight; y += this.tileHeight ) {
+	for ( y = this.margin; y < this.imageHeight; y += this.tileHeight + this.spacing ) {
 
-        for ( x = 0; x < this.imageWidth; x += this.tileWidth ) {
+		for ( x = this.margin; x < this.imageWidth; x += this.tileWidth + this.spacing ) {
 
             texture = this.textures[i];
             frame = texture.frame;
