@@ -2,7 +2,7 @@
  * Tileset
  * @constructor
  */
-var Tileset = function(data, texture) {
+var Tileset = function (data, texture) {
 
     this.baseTexture = texture;
     this.textures = [];
@@ -20,12 +20,12 @@ var Tileset = function(data, texture) {
     var x, y;
 
     // create textures (invalid until baseTexture loaded)
-	for ( y = this.margin; y < this.imageHeight; y += this.tileHeight + this.spacing ) {
+    for (y = this.margin; y < this.imageHeight; y += this.tileHeight + this.spacing) {
 
-        for ( x = this.margin; x < this.imageWidth; x += this.tileWidth + this.spacing ) {
+        for (x = this.margin; x < this.imageWidth; x += this.tileWidth + this.spacing) {
 
             this.textures.push(
-                new PIXI.Texture( this.baseTexture )
+                new PIXI.Texture(this.baseTexture)
             );
         }
     }
@@ -34,13 +34,13 @@ var Tileset = function(data, texture) {
 /**
  * update the frames of the textures
  */
-Tileset.prototype.updateTextures = function() {
+Tileset.prototype.updateTextures = function () {
 
     var texture, frame, x, y, i = 0;
 
-	for ( y = this.margin; y < this.imageHeight; y += this.tileHeight + this.spacing ) {
+    for (y = this.margin; y < this.imageHeight; y += this.tileHeight + this.spacing) {
 
-		for ( x = this.margin; x < this.imageWidth; x += this.tileWidth + this.spacing ) {
+        for (x = this.margin; x < this.imageWidth; x += this.tileWidth + this.spacing) {
 
             texture = this.textures[i];
             frame = texture.frame;
