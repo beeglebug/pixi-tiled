@@ -80,8 +80,8 @@ module.exports = function() {
                         points = [];
 
                         for (p = 0; p < shapeData.polygon.length; p++) {
-                            points.push(shapeData.polygon[p].x);
-                            points.push(shapeData.polygon[p].y);
+                            points.push(shapeData.polygon[p].x + shapeData.x);
+                            points.push(shapeData.polygon[p].y + shapeData.y);
                         }
 
                         shape = new PIXI.Polygon(points);
