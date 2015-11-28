@@ -33,6 +33,30 @@ module.exports = {
             "width":3,
             "x":0,
             "y":0
+        },
+        {
+            "data":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "encoding":"base64",
+            "height":3,
+            "name":"test layer 3",
+            "opacity":1,
+            "type":"tilelayer",
+            "visible":true,
+            "width":3,
+            "x":0,
+            "y":0
+        },
+        {
+            "data":"AQAAAAAAAAABAAAAAQAAAAEAAAABAAAAAAAAAAEAAAABAAAA",
+            "encoding":"base64",
+            "height":3,
+            "name":"test layer 4",
+            "opacity":1,
+            "type":"tilelayer",
+            "visible":true,
+            "width":3,
+            "x":0,
+            "y":0
         }
     ],
     "tileheight":8,

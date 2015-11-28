@@ -116,6 +116,17 @@ module.exports = function() {
 					layer.addChild(mapTexture);
 				} else {
 
+					// decode base64 if it is encoded
+					if('base64' === layerData.encoding){
+						var decodedCharBuffer = new Buffer(layerData.data, 'base64');
+						var gids = [];
+						for(var i = 0; i < decodedCharBuffer.length; i+=4){
+							gids.push(decodedCharBuffer.readInt32LE(i));
+						}
+
+						layerData.data = gids;
+					}
+
 					// generate tiles for the layer
 					var x, y, i, gid, texture, tile;
 
