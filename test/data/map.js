@@ -2,6 +2,17 @@ module.exports = {
     "height":3,
     "layers":[
         {
+            "height":3,
+            "image":"map.png",
+            "name":"test layer 0",
+            "opacity":1,
+            "type":"imagelayer",
+            "visible":true,
+            "width":3,
+            "x":0,
+            "y":0
+        }, 
+        {
             "data":[0,0,0,0,0,0,0,0,0],
             "height":3,
             "name":"test layer 1",

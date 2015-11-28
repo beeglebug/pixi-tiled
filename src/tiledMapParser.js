@@ -110,35 +110,41 @@ module.exports = function() {
 
             var layer = new Layer(layerData.name, layerData.opacity);
 
-            // generate tiles for the layer
-            var x, y, i, gid, texture, tile;
+				// handles the case of an image layer
+				if ( "imagelayer" === layerData.type ) {
+            	var mapTexture = PIXI.Sprite.fromImage(layerData.image);
+					layer.addChild(mapTexture);
+				} else {
 
-            for ( y = 0; y < layerData.height; y++ ) {
+					// generate tiles for the layer
+					var x, y, i, gid, texture, tile;
 
-                for ( x = 0; x < layerData.width; x++ ) {
+					for ( y = 0; y < layerData.height; y++ ) {
 
-                    i = x + (y * layerData.width);
+						 for ( x = 0; x < layerData.width; x++ ) {
 
-                    gid = layerData.data[i];
+							  i = x + (y * layerData.width);
 
-                    // 0 is a gap
-                    if ( gid !== 0 ) {
+							  gid = layerData.data[i];
 
-                        texture = findTexture(gid, map.tilesets);
+							  // 0 is a gap
+							  if ( gid !== 0 ) {
 
-                        tile = new Tile(gid, texture);
+									texture = findTexture(gid, map.tilesets);
 
-                        tile.x = x * data.tilewidth;
-                        tile.y = y * data.tileheight;
+									tile = new Tile(gid, texture);
 
-                        layer.addChild(tile);
-                    }
-                }
-            }
+									tile.x = x * data.tilewidth;
+									tile.y = y * data.tileheight;
+
+									layer.addChild(tile);
+							  }
+						 }
+					}
+				}
 
             // add to map
             map.layers[layer.name] = layer;
-
             map.addChild(layer);
         });
 

@@ -9,11 +9,11 @@ module.exports = {
 
     tiledMapParser : tiledMapParser,
     Tileset : require('./src/Tileset'),
-    Map : require('./src/Map'),
-    Layer : require('./src/Layer')
-
+    TiledMap : require('./src/TiledMap'),
+    Layer : require('./src/Layer'),
+    Tile : require('./src/Tile')
 };
-},{"./src/Layer":4,"./src/Map":5,"./src/Tileset":6,"./src/tiledMapParser":7}],2:[function(require,module,exports){
+},{"./src/Layer":4,"./src/Tile":5,"./src/TiledMap":6,"./src/Tileset":7,"./src/tiledMapParser":8}],2:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -306,87 +306,83 @@ process.umask = function() { return 0; };
  * Layer
  * @constructor
  */
-var Layer = function(layerData, tilesets, tileWidth, tileHeight)
+var Layer = function(name, alpha)
 {
     PIXI.Container.call(this);
 
-    this.data = layerData.data;
+    this.name = name;
 
-    this.alpha = layerData.opacity;
-
-    this.generateSprites(layerData.width, layerData.height, tileWidth, tileHeight, tilesets);
+    this.alpha = alpha;
 };
 
 Layer.prototype = Object.create(PIXI.Container.prototype);
 
-/**
- * generate the map tiles
- */
-Layer.prototype.generateSprites = function(width, height, tileWidth, tileHeight, tilesets)
+Layer.prototype.getTilesByGid = function(gids)
 {
-    var x, y, i, id, texture, sprite;
-
-    for ( y = 0; y < height; y++ ) {
-
-        for ( x = 0; x < width; x++ ) {
-
-            i = x + (y * width);
-
-            id = this.data[i];
-
-            // 0 sprite is a gap
-            if ( id !== 0 ) {
-
-                texture = this.findTexture(id, tilesets);
-
-                sprite = new PIXI.Sprite(texture);
-
-                sprite.x = x * tileWidth;
-                sprite.y = y * tileHeight;
-
-                this.addChild(sprite);
-            }
-        }
-    }
-};
-
-Layer.prototype.findTexture = function(id, tilesets)
-{
-    var tileset, i, ix;
-
-    for ( i = tilesets.length - 1; i >= 0; i-- ) {
-        tileset = tilesets[i];
-        if(tileset.firstGID <= id) { break; }
+    if(!Array.isArray(gids)) {
+        gids = [gids];
     }
 
-    ix = id - tileset.firstGID;
-
-    return tileset.textures[ix];
+    return this.children.filter(function(tile) {
+        return gids.indexOf(tile.gid) > -1;
+    });
 };
 
 module.exports = Layer;
 },{}],5:[function(require,module,exports){
 /**
+ * Tile
+ * @constructor
+ */
+var Tile = function(gid, texture)
+{
+    PIXI.Sprite.call(this, texture);
+
+    this.gid = gid;
+};
+
+Tile.prototype = Object.create(PIXI.Sprite.prototype);
+
+module.exports = Tile;
+},{}],6:[function(require,module,exports){
+/**
  * Map
  * @constructor
  */
-var Map = function() {
-
+var TiledMap = function()
+{
     PIXI.Container.call(this);
 
-    this.tilesets = [];
+    this.layers = {};
 
+    this.tilesets = [];
 };
 
-Map.prototype = Object.create(PIXI.Container.prototype);
+TiledMap.prototype = Object.create(PIXI.Container.prototype);
 
-module.exports = Map;
-},{}],6:[function(require,module,exports){
+TiledMap.prototype.getLayerByName = function(name)
+{
+    return this.layers[name];
+};
+
+TiledMap.prototype.getTilesByGid = function(gids)
+{
+    var tiles = [];
+
+    this.children.forEach(function(layer) {
+        tiles = tiles.concat(layer.getTilesByGid(gids));
+    });
+
+    return tiles;
+};
+
+module.exports = TiledMap;
+},{}],7:[function(require,module,exports){
 /**
  * Tileset
  * @constructor
  */
-var Tileset = function(data, texture) {
+var Tileset = function (data, texture) {
 
     this.baseTexture = texture;
     this.textures = [];
@@ -404,27 +400,29 @@ var Tileset = function(data, texture) {
     var x, y;
 
     // create textures (invalid until baseTexture loaded)
-    for ( y = 0; y < this.imageHeight; y += this.tileHeight ) {
+    for (y = this.margin; y < this.imageHeight; y += this.tileHeight + this.spacing) {
 
-        for ( x = 0; x < this.imageWidth; x += this.tileWidth ) {
+        for (x = this.margin; x < this.imageWidth; x += this.tileWidth + this.spacing) {
 
             this.textures.push(
-                new PIXI.Texture( this.baseTexture )
+                new PIXI.Texture(this.baseTexture)
             );
         }
     }
+
+    this.tiles = {};
 };
 
 /**
  * update the frames of the textures
  */
-Tileset.prototype.updateTextures = function() {
+Tileset.prototype.updateTextures = function () {
 
     var texture, frame, x, y, i = 0;
 
-    for ( y = 0; y < this.imageHeight; y += this.tileHeight ) {
+    for (y = this.margin; y < this.imageHeight; y += this.tileHeight + this.spacing) {
 
-        for ( x = 0; x < this.imageWidth; x += this.tileWidth ) {
+        for (x = this.margin; x < this.imageWidth; x += this.tileWidth + this.spacing) {
 
             texture = this.textures[i];
             frame = texture.frame;
@@ -443,18 +441,40 @@ Tileset.prototype.updateTextures = function() {
 };
 
 module.exports = Tileset;
-},{}],7:[function(require,module,exports){
-var Map = require('./Map');
+
+},{}],8:[function(require,module,exports){
+var TiledMap = require('./TiledMap');
 var Tileset = require('./Tileset');
 var Layer = require('./Layer');
+var Tile = require('./Tile');
 var path = require('path');
 
 module.exports = function() {
 
+    /**
+     * find the texture for a given tile from the array of tilesets
+     */
+    function findTexture(gid, tilesets)
+    {
+        var tileset, i, ix;
+
+        // go backwards through the tilesets
+        // find the first tileset with the firstGID lower that the one we want
+        for ( i = tilesets.length - 1; i >= 0; i-- ) {
+            tileset = tilesets[i];
+            if(tileset.firstGID <= gid) { break; }
+        }
+
+        // calculate the internal position within the tileset
+        ix = gid - tileset.firstGID;
+
+        return tileset.textures[ix];
+    }
+
     return function (resource, next) {
 
         // early exit if it is not the right type
-        if (!resource.data.layers || !resource.data.tilesets) {
+        if (!resource.data || !resource.isJson || !resource.data.layers || !resource.data.tilesets) {
             return next();
         }
 
@@ -463,7 +483,7 @@ module.exports = function() {
 
         var data = resource.data;
 
-        var map = new Map(data);
+        var map = new TiledMap(data);
 
         var toLoad = 0;
 
@@ -487,16 +507,94 @@ module.exports = function() {
             });
 
             map.tilesets.push(tileset);
+
+            var id, i, p, tile, shapeData, shapes, shape, points;
+
+            for(id in tilesetData.tiles) {
+
+                tile = tilesetData.tiles[id];
+
+                for(i = 0; i < tile.objectgroup.objects.length; i++) {
+
+                    shapeData = tile.objectgroup.objects[0];
+
+                    shapes = [];
+
+                    if (shapeData.polygon) {
+
+                        points = [];
+
+                        for (p = 0; p < shapeData.polygon.length; p++) {
+                            points.push(shapeData.polygon[p].x);
+                            points.push(shapeData.polygon[p].y);
+                        }
+
+                        shape = new PIXI.Polygon(points);
+
+                    } else if (shapeData.ellipse) {
+
+                        shape = new PIXI.Circle(shapeData.x, shapeData.y, shapeData.height / 2);
+
+                    } else {
+
+                        shape = new PIXI.Rectangle(shapeData.x, shapeData.y, shapeData.width, shapeData.height);
+
+                    }
+
+                    shapes.push(shape);
+                }
+
+                // object data id is 1 lower than gid for some reason
+                tileset.tiles[+id + 1] = {
+                    collision: shapes
+                };
+            }
         });
 
         data.layers.forEach(function (layerData) {
 
-            var layer = new Layer(layerData, map.tilesets, data.tilewidth, data.tileheight);
+            var layer = new Layer(layerData.name, layerData.opacity);
 
+				// handles the case of an image layer
+				if ( "imagelayer" === layerData.type ) {
+            	var mapTexture = PIXI.Sprite.fromImage(layerData.image);
+					layer.addChild(mapTexture);
+				} else {
+
+					// generate tiles for the layer
+					var x, y, i, gid, texture, tile;
+
+					for ( y = 0; y < layerData.height; y++ ) {
+
+						 for ( x = 0; x < layerData.width; x++ ) {
+
+							  i = x + (y * layerData.width);
+
+							  gid = layerData.data[i];
+
+							  // 0 is a gap
+							  if ( gid !== 0 ) {
+
+									texture = findTexture(gid, map.tilesets);
+
+									tile = new Tile(gid, texture);
+
+									tile.x = x * data.tilewidth;
+									tile.y = y * data.tileheight;
+
+									layer.addChild(tile);
+							  }
+						 }
+					}
+				}
+
+            // add to map
+            map.layers[layer.name] = layer;
             map.addChild(layer);
         });
 
         resource.tiledMap = map;
     };
 };
-},{"./Layer":4,"./Map":5,"./Tileset":6,"path":2}]},{},[1]);
+
+},{"./Layer":4,"./Tile":5,"./TiledMap":6,"./Tileset":7,"path":2}]},{},[1]);

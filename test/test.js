@@ -42,6 +42,7 @@ describe('parser', function() {
 
         expect(layers).to.be.an('object');
         expect(layers).to.have.all.keys([
+            'test layer 0',
             'test layer 1',
             'test layer 2'
         ]);
@@ -56,7 +57,7 @@ describe('parser', function() {
         var children = resource.tiledMap.children;
 
         expect(children).to.be.an('array');
-        expect(children).to.have.length(2);
+        expect(children).to.have.length(3);
     });
 
     it('should create tiles', function () {
