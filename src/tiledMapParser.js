@@ -9,7 +9,7 @@ module.exports = function() {
     /**
      * find the texture for a given tile from the array of tilesets
      */
-    function findTexture(gid, tilesets)
+    function findTilesetAndTexture(gid, tilesets)
     {
         var tileset, i, ix;
 
@@ -23,8 +23,60 @@ module.exports = function() {
         // calculate the internal position within the tileset
         ix = gid - tileset.firstGID;
 
-        return tileset.textures[ix];
+		  return {"tileset": tileset, "texture":tileset.textures[ix]};
     }
+
+	 /**
+	  * Computes the x coordinate by considering all possible configuration options of tiled
+	  * render order: right-down
+	  * */
+	 function computeXCoordinate(i, j, tilewidth, orientation, staggerindex)
+	 {
+
+	 		orientation = typeof orientation !== 'undefined' ? orientation : 'orthogonal';
+	 		staggerindex = typeof staggerindex !== 'undefined' ? staggerindex : 'odd';
+	 		var x;
+
+			x = i * tilewidth;
+
+			if ( 'staggered' === orientation ){
+
+				if ( 'odd' === staggerindex ){
+
+					x += (j % 2 != 0) ? tilewidth / 2 : 0;
+					
+				} else {
+
+					x += (j % 2 == 0) ? tilewidth / 2 : 0;
+
+				}
+			}
+
+			return x;
+	 }
+
+	 /**
+	  * Computes the y coordinate by considering all possible configuration options of tiled
+	  * render order: right-down
+	  * */
+	 function computeYCoordinate(j, tileheight_map, tileheight_tile, orientation)
+	 {
+	 		orientation = typeof orientation !== 'undefined' ? orientation : 'orthogonal';
+
+			var y;
+
+			if ( 'staggered' === orientation ){
+
+				y = j * (tileheight_map / 2) - (tileheight_tile - tileheight_map);
+
+			} else {
+
+				y = j * tileheight_map;
+
+			}
+
+			return y;
+	 }
 
     return function (resource, next) {
 
@@ -141,12 +193,13 @@ module.exports = function() {
 							  // 0 is a gap
 							  if ( gid !== 0 ) {
 
-									texture = findTexture(gid, map.tilesets);
+									tilesetAndTexture = findTilesetAndTexture(gid, map.tilesets);
+									texture = tilesetAndTexture.texture;
 
 									tile = new Tile(gid, texture);
 
-									tile.x = x * data.tilewidth;
-									tile.y = y * data.tileheight;
+									tile.x = computeXCoordinate(x, y, data.tilewidth, data.orientation, data.staggerindex);
+									tile.y = computeYCoordinate(y, data.tileheight, tilesetAndTexture.tileset.imageHeight, data.orientation);
 
 									layer.addChild(tile);
 							  }
