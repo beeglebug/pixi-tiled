@@ -9,7 +9,7 @@ module.exports = function() {
     /**
      * find the texture for a given tile from the array of tilesets
      */
-    function findTexture(gid, tilesets)
+    function findTilesetAndTexture(gid, tilesets)
     {
         var tileset, i, ix;
 
@@ -23,8 +23,60 @@ module.exports = function() {
         // calculate the internal position within the tileset
         ix = gid - tileset.firstGID;
 
-        return tileset.textures[ix];
+		  return {"tileset": tileset, "texture":tileset.textures[ix]};
     }
+
+	 /**
+	  * Computes the x coordinate by considering all possible configuration options of tiled
+	  * render order: right-down
+	  * */
+	 function computeXCoordinate(i, j, tilewidth, orientation, staggerindex)
+	 {
+
+	 		orientation = typeof orientation !== 'undefined' ? orientation : 'orthogonal';
+	 		staggerindex = typeof staggerindex !== 'undefined' ? staggerindex : 'odd';
+	 		var x;
+
+			x = i * tilewidth;
+
+			if ( 'staggered' === orientation ){
+
+				if ( 'odd' === staggerindex ){
+
+					x += (j % 2 != 0) ? tilewidth / 2 : 0;
+					
+				} else {
+
+					x += (j % 2 == 0) ? tilewidth / 2 : 0;
+
+				}
+			}
+
+			return x;
+	 }
+
+	 /**
+	  * Computes the y coordinate by considering all possible configuration options of tiled
+	  * render order: right-down
+	  * */
+	 function computeYCoordinate(j, tileheight_map, tileheight_tile, orientation)
+	 {
+	 		orientation = typeof orientation !== 'undefined' ? orientation : 'orthogonal';
+
+			var y;
+
+			if ( 'staggered' === orientation ){
+
+				y = j * (tileheight_map / 2) - (tileheight_tile - tileheight_map);
+
+			} else {
+
+				y = j * tileheight_map;
+
+			}
+
+			return y;
+	 }
 
     return function (resource, next) {
 
@@ -110,35 +162,53 @@ module.exports = function() {
 
             var layer = new Layer(layerData.name, layerData.opacity);
 
-            // generate tiles for the layer
-            var x, y, i, gid, texture, tile;
+				// handles the case of an image layer
+				if ( "imagelayer" === layerData.type ) {
+            	var mapTexture = PIXI.Sprite.fromImage(layerData.image);
+					layer.addChild(mapTexture);
+				} else {
 
-            for ( y = 0; y < layerData.height; y++ ) {
+					// decode base64 if it is encoded
+					if('base64' === layerData.encoding){
+						var decodedCharBuffer = new Buffer(layerData.data, 'base64');
+						var gids = [];
+						for(var i = 0; i < decodedCharBuffer.length; i+=4){
+							gids.push(decodedCharBuffer.readInt32LE(i));
+						}
 
-                for ( x = 0; x < layerData.width; x++ ) {
+						layerData.data = gids;
+					}
 
-                    i = x + (y * layerData.width);
+					// generate tiles for the layer
+					var x, y, i, gid, texture, tile;
 
-                    gid = layerData.data[i];
+					for ( y = 0; y < layerData.height; y++ ) {
 
-                    // 0 is a gap
-                    if ( gid !== 0 ) {
+						 for ( x = 0; x < layerData.width; x++ ) {
 
-                        texture = findTexture(gid, map.tilesets);
+							  i = x + (y * layerData.width);
 
-                        tile = new Tile(gid, texture);
+							  gid = layerData.data[i];
 
-                        tile.x = x * data.tilewidth;
-                        tile.y = y * data.tileheight;
+							  // 0 is a gap
+							  if ( gid !== 0 ) {
 
-                        layer.addChild(tile);
-                    }
-                }
-            }
+									tilesetAndTexture = findTilesetAndTexture(gid, map.tilesets);
+									texture = tilesetAndTexture.texture;
+
+									tile = new Tile(gid, texture);
+
+									tile.x = computeXCoordinate(x, y, data.tilewidth, data.orientation, data.staggerindex);
+									tile.y = computeYCoordinate(y, data.tileheight, tilesetAndTexture.tileset.imageHeight, data.orientation);
+
+									layer.addChild(tile);
+							  }
+						 }
+					}
+				}
 
             // add to map
             map.layers[layer.name] = layer;
-
             map.addChild(layer);
         });
 
