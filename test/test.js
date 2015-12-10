@@ -42,8 +42,11 @@ describe('parser', function() {
 
         expect(layers).to.be.an('object');
         expect(layers).to.have.all.keys([
+            'test layer 0',
             'test layer 1',
-            'test layer 2'
+            'test layer 2',
+            'test layer 4',
+            'test layer 3'
         ]);
 
         var layer = resource.tiledMap.getLayerByName('test layer 1');
@@ -56,13 +59,19 @@ describe('parser', function() {
         var children = resource.tiledMap.children;
 
         expect(children).to.be.an('array');
-        expect(children).to.have.length(2);
+        expect(children).to.have.length(5);
     });
 
     it('should create tiles', function () {
 
+        var layer0 = resource.tiledMap.getLayerByName('test layer 0');
         var layer1 = resource.tiledMap.getLayerByName('test layer 1');
         var layer2 = resource.tiledMap.getLayerByName('test layer 2');
+        var layer3 = resource.tiledMap.getLayerByName('test layer 3');
+        var layer4 = resource.tiledMap.getLayerByName('test layer 4');
+
+        expect(layer0.children).to.be.an('array');
+        expect(layer0.children).to.have.length(1);
 
         expect(layer1.children).to.be.an('array');
         expect(layer1.children).to.have.length(0);
@@ -70,12 +79,46 @@ describe('parser', function() {
         expect(layer2.children).to.be.an('array');
         expect(layer2.children).to.have.length(9);
 
+        expect(layer3.children).to.be.an('array');
+        expect(layer3.children).to.have.length(0);
+
+        expect(layer4.children).to.be.an('array');
+        expect(layer4.children).to.have.length(7);
+
         var tile1 = layer2.children[0];
         var tile2 = layer2.children[4];
 
         expect(tile1).to.be.an.instanceOf(pixiTiled.Tile);
         expect(tile1.gid).to.equal(1);
         expect(tile2.gid).to.equal(2);
+
+    });
+
+    it('should decode base64 encrypted data', function() {
+        var layer4 = resource.tiledMap.getLayerByName('test layer 4');
+
+        var tile1 = layer4.children[0];
+        var tile2 = layer4.children[1];
+        var tile3 = layer4.children[2];
+        var tile4 = layer4.children[3];
+        var tile5 = layer4.children[4];
+        var tile6 = layer4.children[5];
+        var tile7 = layer4.children[6];
+
+        expect(tile1).to.be.an.instanceOf(pixiTiled.Tile);
+        expect(tile1.gid).to.equal(1);
+        expect(tile2).to.be.an.instanceOf(pixiTiled.Tile);
+        expect(tile2.gid).to.equal(1);
+        expect(tile3).to.be.an.instanceOf(pixiTiled.Tile);
+        expect(tile3.gid).to.equal(1);
+        expect(tile4).to.be.an.instanceOf(pixiTiled.Tile);
+        expect(tile4.gid).to.equal(1);
+        expect(tile5).to.be.an.instanceOf(pixiTiled.Tile);
+        expect(tile5.gid).to.equal(1);
+        expect(tile6).to.be.an.instanceOf(pixiTiled.Tile);
+        expect(tile6.gid).to.equal(1);
+        expect(tile7).to.be.an.instanceOf(pixiTiled.Tile);
+        expect(tile7.gid).to.equal(1);
 
     });
 });

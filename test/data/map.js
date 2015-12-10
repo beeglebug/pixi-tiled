@@ -2,6 +2,17 @@ module.exports = {
     "height":3,
     "layers":[
         {
+            "height":3,
+            "image":"map.png",
+            "name":"test layer 0",
+            "opacity":1,
+            "type":"imagelayer",
+            "visible":true,
+            "width":3,
+            "x":0,
+            "y":0
+        }, 
+        {
             "data":[0,0,0,0,0,0,0,0,0],
             "height":3,
             "name":"test layer 1",
@@ -16,6 +27,30 @@ module.exports = {
             "data":[1,1,1,1,2,1,1,1,1],
             "height":3,
             "name":"test layer 2",
+            "opacity":1,
+            "type":"tilelayer",
+            "visible":true,
+            "width":3,
+            "x":0,
+            "y":0
+        },
+        {
+            "data":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "encoding":"base64",
+            "height":3,
+            "name":"test layer 3",
+            "opacity":1,
+            "type":"tilelayer",
+            "visible":true,
+            "width":3,
+            "x":0,
+            "y":0
+        },
+        {
+            "data":"AQAAAAAAAAABAAAAAQAAAAEAAAABAAAAAAAAAAEAAAABAAAA",
+            "encoding":"base64",
+            "height":3,
+            "name":"test layer 4",
             "opacity":1,
             "type":"tilelayer",
             "visible":true,
