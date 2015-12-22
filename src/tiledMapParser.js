@@ -3,6 +3,7 @@ var Tileset = require('./Tileset');
 var Layer = require('./Layer');
 var Tile = require('./Tile');
 var path = require('path');
+var util = require('./util');
 
 module.exports = function() {
 
@@ -162,11 +163,19 @@ module.exports = function() {
 
             var layer = new Layer(layerData.name, layerData.opacity);
 
-				// handles the case of an image layer
-				if ( "imagelayer" === layerData.type ) {
-            	var mapTexture = PIXI.Sprite.fromImage(layerData.image);
-					layer.addChild(mapTexture);
-				} else {
+            switch(layerData.type) {
+
+                case 'imagelayer':
+                    var mapTexture = PIXI.Sprite.fromImage(layerData.image);
+                    layer.addChild(mapTexture);
+                    break;
+                case 'objectlayer':
+                    return util.warn('pixi-tiled: object layers currently unsupported');
+                case 'tilelayer':
+
+                    if(layerData.compression) {
+                        return util.warn('pixi-tiled: compressed layer data currently unsupported');
+                    }
 
 					// decode base64 if it is encoded
 					if('base64' === layerData.encoding){
