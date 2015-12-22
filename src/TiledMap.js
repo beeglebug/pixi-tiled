@@ -15,7 +15,11 @@ TiledMap.prototype = Object.create(PIXI.Container.prototype);
 
 TiledMap.prototype.getLayerByName = function(name)
 {
-    return this.layers[name];
+    if(this.layers[name] !== undefined) {
+        return this.layers[name];
+    }
+
+    return null;
 };
 
 TiledMap.prototype.getTilesByGid = function(gids)
