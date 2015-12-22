@@ -62,6 +62,16 @@ Tileset.prototype.updateTextures = function () {
             frame.x = x;
             frame.y = y;
 
+            // trim to fit to avoid errors
+            // only caused by mismatched images/data
+            if(frame.x + frame.width > this.baseTexture.width) {
+                frame.width = (this.baseTexture.width - frame.x);
+            }
+
+            if(frame.y + frame.height > this.baseTexture.height) {
+                frame.height = (this.baseTexture.height - frame.y);
+            }
+
             // force UV update
             texture.frame = frame;
 
