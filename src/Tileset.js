@@ -1,3 +1,5 @@
+var util = require('./util');
+
 /**
  * Tileset
  * @constructor
@@ -18,6 +20,14 @@ var Tileset = function (data, texture) {
     // @todo data.properties?
 
     var x, y;
+
+    // warn when sizing is mismatched
+    if(
+        (this.imageWidth - (2*this.margin)) % (this.tileWidth + this.spacing) !== this.spacing ||
+        (this.imageHeight - (2*this.margin)) % (this.tileHeight + this.spacing) !== this.spacing
+    ) {
+        util.warn('pixi-tiled: tileset image dimensions do not match tileset data');
+    }
 
     // create textures (invalid until baseTexture loaded)
     for (y = this.margin; y < this.imageHeight; y += this.tileHeight + this.spacing) {
