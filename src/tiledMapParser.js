@@ -76,6 +76,10 @@ module.exports = function() {
 
 			}
 
+            // move each tile down to accomodate the bottom left tile anchor
+            // this keeps the map itself top left anchored at 0,0
+            y += tileheight_map;
+
 			return y;
 	 }
 

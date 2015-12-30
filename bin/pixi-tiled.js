@@ -2002,6 +2002,9 @@ var Tile = function(gid, texture)
     PIXI.Sprite.call(this, texture);
 
     this.gid = gid;
+
+    // tiled always anchors sprites bottom left
+    this.anchor.set(0,1);
 };
 
 Tile.prototype = Object.create(PIXI.Sprite.prototype);
@@ -2208,6 +2211,10 @@ module.exports = function() {
 				y = j * tileheight_map;
 
 			}
+
+            // move each tile down to accomodate the bottom left tile anchor
+            // this keeps the map itself top left anchored at 0,0
+            y += tileheight_map;
 
 			return y;
 	 }
