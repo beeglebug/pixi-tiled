@@ -35,6 +35,18 @@ module.exports = {
             "y":0
         },
         {
+            "data":"fake compressed data",
+            "compression":"zlib",
+            "height":3,
+            "name":"compressed layer",
+            "opacity":1,
+            "type":"tilelayer",
+            "visible":true,
+            "width":3,
+            "x":0,
+            "y":0
+        },
+        {
             "data":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             "encoding":"base64",
             "height":3,

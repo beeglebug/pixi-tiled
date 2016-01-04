@@ -8,14 +8,14 @@ var pixiTiled = require('../index.js');
 
 var parser = pixiTiled.tiledMapParser();
 
+// fake it because we don't actually load the file
 var resource = {
+    isJson: true,
     data: require('./data/map.js')
 };
 
 var next = function () {};
 
-// fake it because we don't actually load the file
-resource.isJson = true;
 parser(resource, next);
 
 describe('parser', function() {
@@ -95,32 +95,26 @@ describe('parser', function() {
     });
 
     it('should decode base64 encrypted data', function() {
-        var layer4 = resource.tiledMap.getLayerByName('test layer 4');
 
-        var tile1 = layer4.children[0];
-        var tile2 = layer4.children[1];
-        var tile3 = layer4.children[2];
-        var tile4 = layer4.children[3];
-        var tile5 = layer4.children[4];
-        var tile6 = layer4.children[5];
-        var tile7 = layer4.children[6];
+        var layer = resource.tiledMap.getLayerByName('test layer 4');
 
-        expect(tile1).to.be.an.instanceOf(pixiTiled.Tile);
-        expect(tile1.gid).to.equal(1);
-        expect(tile2).to.be.an.instanceOf(pixiTiled.Tile);
-        expect(tile2.gid).to.equal(1);
-        expect(tile3).to.be.an.instanceOf(pixiTiled.Tile);
-        expect(tile3.gid).to.equal(1);
-        expect(tile4).to.be.an.instanceOf(pixiTiled.Tile);
-        expect(tile4.gid).to.equal(1);
-        expect(tile5).to.be.an.instanceOf(pixiTiled.Tile);
-        expect(tile5.gid).to.equal(1);
-        expect(tile6).to.be.an.instanceOf(pixiTiled.Tile);
-        expect(tile6.gid).to.equal(1);
-        expect(tile7).to.be.an.instanceOf(pixiTiled.Tile);
-        expect(tile7.gid).to.equal(1);
-
+        expect(layer.children).to.satisfy(function(tiles) {
+            return tiles.every(function(tile) {
+                return tile instanceof pixiTiled.Tile;
+            });
+        });
     });
+
+
+
+    
+    it('should skip compressed layers', function () {
+
+        var layer = resource.tiledMap.getLayerByName('compressed layer');
+
+        expect(layer).to.be.null;
+    });
+
 });
 
 describe('tileset', function() {
