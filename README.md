@@ -2,9 +2,9 @@
 
 Import [Tiled](http://www.mapeditor.org/) maps into pixi v3.
 
-Uses the new loader middleware to intercept Tiled json maps and parse them into renderable objects.
+A piece of loader middleware which parses Tiled json maps into renderable PIXI objects.
 
-The resulting Map object is an extension of PIXI.Container, with children representing each of the Tiled map layers.
+The resulting object is an extension of PIXI.Container, with children representing each of the Tiled map layers.
 
 ## installation
 
@@ -29,6 +29,12 @@ PIXI.loader.add('map.json', function(res)
 
 PIXI.loader.load();
 ```
+
+## features
+
+ - Tiled maps in json format
+ - Uncompressed layer data only
+ - CSV or base64 encoding
 
 [npm-url]: https://npmjs.org/package/pixi-tiled
 [npm-image]: http://img.shields.io/npm/v/pixi-tiled.svg?style=flat
