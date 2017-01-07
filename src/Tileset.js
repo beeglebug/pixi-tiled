@@ -23,8 +23,8 @@ var Tileset = function (data, texture) {
 
     // warn when sizing is mismatched
     if(
-        (this.imageWidth - (2*this.margin)) % (this.tileWidth + this.spacing) !== this.spacing ||
-        (this.imageHeight - (2*this.margin)) % (this.tileHeight + this.spacing) !== this.spacing
+        (this.imageWidth - (2*this.margin)) % (this.tileWidth + this.spacing) !== this.tileWidth ||
+        (this.imageHeight - (2*this.margin)) % (this.tileHeight + this.spacing) !== this.tileHeight
     ) {
         util.warn('pixi-tiled: tileset image dimensions do not match tileset data');
     }
