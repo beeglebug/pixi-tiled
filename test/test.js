@@ -11,7 +11,8 @@ var parser = pixiTiled.tiledMapParser();
 // fake it because we don't actually load the file
 var resource = {
     isJson: true,
-    data: require('./data/map.js')
+    data: require('./data/map.js'),
+    url: './data/map.js'
 };
 
 var next = function () {};
