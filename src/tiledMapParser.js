@@ -83,6 +83,34 @@ module.exports = function() {
 			return y;
 	 }
 
+     function base64ToGids(src) {
+         while (src.length % 4 != 0) {
+            src = subject + "=";
+         }
+         var bytes = require('base64-js').toByteArray(src);
+         var length = bytes.length;
+         var gids = []
+
+         for (var i =0; i< length; i+= 4) {
+             var val = 0;
+
+             if (i + 2 < length)
+                 val = bytes[i+ 2] << 16;
+
+             if (i + 1 < length)
+                 val |= bytes[i + 1] << 8;
+
+             val |= bytes[i];
+
+             if (i+ 3 < length)
+                 val = val + (bytes[i + 3] << 24 >>> 0);
+
+             gids.push(val & 0x80000000 ? (0xffffffff - val + 1) * -1 : val)
+         }
+
+         return gids
+     }
+
     return function (resource, next) {
 
         // early exit if it is not the right type
@@ -183,13 +211,7 @@ module.exports = function() {
 
 					// decode base64 if it is encoded
 					if('base64' === layerData.encoding){
-						var decodedCharBuffer = new Buffer(layerData.data, 'base64');
-						var gids = [];
-						for(var i = 0; i < decodedCharBuffer.length; i+=4){
-							gids.push(decodedCharBuffer.readInt32LE(i));
-						}
-
-						layerData.data = gids;
+                        layerData.data = base64ToGids(layerData.data);
 					}
 
 					// generate tiles for the layer
